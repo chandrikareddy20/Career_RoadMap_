@@ -1,0 +1,286 @@
+:host {
+  display: block;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.skills-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #071B2E, #0E2A47);
+  color: #FFFFFF;
+  font-family: Poppins, sans-serif;
+  padding: 40px;
+  position: relative;
+}
+
+.back-btn {
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 8px;
+  color: white;
+  font-size: 24px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #A9B7C9;
+  margin-bottom: 40px;
+}
+
+.card {
+  background: #0F2138;
+  border-radius: 16px;
+  padding: 32px;
+  backdrop-filter: blur(10px);
+  border: 1px solid #162E4A;
+  margin-bottom: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(46, 107, 255, 0.25);
+    border: 3px solid rgba(46, 107, 255, 0.6);
+  }
+}
+
+.card h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.instruction {
+  font-size: 14px;
+  color: #A9B7C9;
+  margin-bottom: 24px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #A9B7C9;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #2A4B7C;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #162B45;
+  color: #DCE6F2;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-group select {
+  cursor: pointer;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.add-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: 2px solid rgba(46, 107, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 107, 255, 0.25);
+}
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  border-radius: 8px;
+  gap: 12px;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 107, 255, 0.2);
+    border: 2px solid rgba(46, 107, 255, 0.4);
+  }
+}
+
+.skill-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.skill-level {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+}
+
+.interest-input-group {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.interest-input-group input {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  outline: none;
+}
+
+.interest-input-group input:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.add-icon-btn {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.interests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.interest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.interest-item .remove-btn {
+  font-size: 18px;
+  width: 20px;
+  height: 20px;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 14px 28px;
+  background: #2E6BFF;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: Poppins, sans-serif;
+  box-shadow: 0 4px 12px rgba(46, 107, 255, 0.35);
+  white-space: nowrap;
+}
+
+.save-btn:hover {
+  background: #2558D8;
+  box-shadow: 0 6px 18px rgba(46, 107, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.save-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(46, 107, 255, 0.3);
+}

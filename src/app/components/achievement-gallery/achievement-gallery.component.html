@@ -1,0 +1,123 @@
+<div class="achievement-gallery">
+  <div class="gallery-header">
+    <div class="header-top">
+      <div>
+        <h2>🏆 Achievement Gallery</h2>
+        <p class="subtitle">Unlock achievements and showcase your progress</p>
+      </div>
+      <button class="toggle-gallery-btn" (click)="toggleFullGallery()">
+        {{ showFullGallery ? '▼ Hide Gallery' : '▶ Show Full Gallery' }}
+      </button>
+    </div>
+    
+    <!-- Recently Earned Section -->
+    <div class="recently-earned" *ngIf="getRecentlyEarned().length > 0">
+      <h3>✨ Recently Unlocked</h3>
+      <div class="recent-badges">
+        <div 
+          *ngFor="let achievement of getRecentlyEarned()" 
+          class="recent-badge"
+          [class.rarity-common]="achievement.rarity === 'common'"
+          [class.rarity-rare]="achievement.rarity === 'rare'"
+          [class.rarity-epic]="achievement.rarity === 'epic'"
+          [class.rarity-legendary]="achievement.rarity === 'legendary'"
+        >
+          <div class="recent-icon">{{ achievement.icon }}</div>
+          <div class="recent-title">{{ achievement.title }}</div>
+          <div class="recent-date" *ngIf="achievement.unlockedAt">
+            {{ achievement.unlockedAt | date:'shortDate' }}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Category Filter (only shown when full gallery is visible) -->
+    <div class="category-filters" *ngIf="showFullGallery">
+      <button
+        *ngFor="let category of categories"
+        class="category-btn"
+        [class.active]="selectedCategory === category"
+        (click)="setCategory(category)"
+      >
+        <span class="category-name">{{ category }}</span>
+        <span class="category-count">
+          {{ getCategoryUnlockedCount(category) }}/{{ getCategoryCount(category) }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Achievement Grid (only shown when full gallery is visible) -->
+  <div class="achievement-grid" *ngIf="showFullGallery">
+    <div
+      *ngFor="let achievement of getFilteredAchievements()"
+      class="achievement-card"
+      [class.unlocked]="achievement.unlocked"
+      [class.rarity-common]="achievement.rarity === 'common'"
+      [class.rarity-rare]="achievement.rarity === 'rare'"
+      [class.rarity-epic]="achievement.rarity === 'epic'"
+      [class.rarity-legendary]="achievement.rarity === 'legendary'"
+    >
+      <div class="card-inner">
+        <!-- Front of Card -->
+        <div class="card-front">
+          <div class="achievement-icon">{{ achievement.icon }}</div>
+          <div class="achievement-title">{{ achievement.title }}</div>
+          <div class="achievement-category">{{ achievement.category }}</div>
+          <div class="rarity-badge" [class]="'rarity-' + achievement.rarity">
+            {{ achievement.rarity }}
+          </div>
+        </div>
+        
+        <!-- Back of Card -->
+        <div class="card-back">
+          <div class="achievement-icon-large">{{ achievement.icon }}</div>
+          <div class="achievement-title-large">{{ achievement.title }}</div>
+          <div class="achievement-description">{{ achievement.description }}</div>
+          
+          <!-- Progress Bar for Locked Achievements -->
+          <div class="achievement-progress" *ngIf="!achievement.unlocked">
+            <div class="progress-label">
+              <span>{{ achievement.requirement }}</span>
+              <span class="progress-percentage">{{ getProgressPercentage(achievement.progress) }}%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="achievement.progress"></div>
+            </div>
+            <div class="progress-text">
+              {{ achievement.currentValue }} / {{ achievement.requirementValue }}
+            </div>
+          </div>
+          
+          <!-- Unlocked Info -->
+          <div class="unlocked-info" *ngIf="achievement.unlocked">
+            <div class="unlocked-badge">✓ Unlocked</div>
+            <div class="unlocked-date" *ngIf="achievement.unlockedAt">
+              {{ achievement.unlockedAt | date:'shortDate' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebration Modal -->
+  <div class="celebration-overlay" *ngIf="showCelebration" (click)="showCelebration = false">
+    <div class="celebration-modal" (click)="$event.stopPropagation()">
+      <div class="celebration-content">
+        <div class="celebration-icon">{{ celebratingAchievement?.icon }}</div>
+        <div class="celebration-title">Achievement Unlocked!</div>
+        <div class="celebration-name">{{ celebratingAchievement?.title }}</div>
+        <div class="celebration-description">{{ celebratingAchievement?.description }}</div>
+        <div class="celebration-category">{{ celebratingAchievement?.category }}</div>
+        <div class="celebration-rarity" [class]="'rarity-' + celebratingAchievement?.rarity">
+          {{ celebratingAchievement?.rarity }}
+        </div>
+      </div>
+      <div class="celebration-particles">
+        <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="particle" [style.animation-delay.ms]="i * 100">✨</span>
+      </div>
+    </div>
+  </div>
+</div>
+

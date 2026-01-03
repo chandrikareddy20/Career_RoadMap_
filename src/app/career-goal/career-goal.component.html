@@ -1,0 +1,29 @@
+<div class="career-goal-page">
+  <button class="back-btn" (click)="goBack()">←</button>
+
+  <div class="content">
+    <h1>Choose Your Career Goal</h1>
+    <p class="subtitle">Select the career path you want to pursue</p>
+
+    <div class="careers-grid">
+      <div 
+        class="career-card" 
+        *ngFor="let career of careers"
+        [class.selected]="selectedCareer === career.id"
+        (click)="selectCareer(career.id)"
+      >
+        <div class="career-icon">🎯</div>
+        <h3>{{ career.title }}</h3>
+        <p>{{ career.description }}</p>
+      </div>
+    </div>
+
+    <button 
+      class="generate-btn" 
+      (click)="generateRoadmap()"
+      [disabled]="!selectedCareer"
+    >
+      Generate My Roadmap
+    </button>
+  </div>
+</div>

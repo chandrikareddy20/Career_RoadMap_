@@ -1,0 +1,20 @@
+<div class="quiz-score-page">
+  <div class="card">
+    <h2>Quiz Results</h2>
+    <div *ngIf="latestAttempt; else noAttempt">
+      <p><strong>Skill:</strong> {{ latestAttempt.skill }}</p>
+      <p><strong>Score:</strong> {{ latestAttempt.score }}%</p>
+      <p><strong>Time:</strong> {{ latestAttempt.timeElapsed }}</p>
+      <p><strong>At:</strong> {{ latestAttempt.at }}</p>
+      <div style="margin-top:12px">
+        <p>The quiz was ended due to a security policy (tab switch, minimize, or navigation during the quiz).</p>
+      </div>
+    </div>
+    <ng-template #noAttempt>
+      <p>No quiz result available.</p>
+    </ng-template>
+    <div style="margin-top:12px">
+      <button class="btn primary" onclick="history.back()">Back</button>
+    </div>
+  </div>
+</div>

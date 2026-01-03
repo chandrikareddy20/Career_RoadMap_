@@ -1,0 +1,5 @@
+/* Hide the header on the live website while keeping the element available for unit tests */
+header {
+	display: none !important;
+}
+

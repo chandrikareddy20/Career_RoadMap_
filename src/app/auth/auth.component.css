@@ -1,0 +1,320 @@
+/* Accessibility improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus indicators for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #2E6BFF;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Improved touch targets for mobile (min 44x44px) */
+button,
+input[type="submit"],
+input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+app-root {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+}
+
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  padding: 56px 72px;
+  margin: 0;
+  background: linear-gradient(135deg, #071B2E, #0E2A47);
+  color: #FFFFFF;
+  font-family: Poppins, sans-serif;
+  box-sizing: border-box;
+}
+
+.left {
+  width: 60%;
+  padding-left: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  font-size: 36px; /* slightly reduced for a smaller, balanced look */
+  margin-bottom: 18px;
+  font-weight: 800;
+  line-height: 1.02;
+}
+
+.icon {
+  width:56px;
+  height:56px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(255,255,255,0.08);
+  border-radius:12px;
+  font-size:20px;
+  margin-right:16px;
+}
+
+.subtitle {
+  font-size: 16px;
+  margin-bottom: 28px;
+  max-width: 640px;
+  line-height: 1.6;
+  color: #A9B7C9;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.right {
+  width: 38%;
+  max-width: 520px;
+  background: #0F2138;
+  padding: 36px 40px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  border: 1px solid #162E4A;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+/* Hover lift for desktop pointers */
+@media (hover: hover) and (pointer: fine) {
+  .right:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(46, 107, 255, 0.3);
+    border: 3px solid rgba(46, 107, 255, 0.4);
+  }
+}
+
+/* Reduce hover effects on touch/smaller screens */
+@media (max-width: 900px) {
+  .right { transform: none !important; box-shadow: 0 12px 30px rgba(2,12,43,0.22); }
+  .right:hover { transform: none; box-shadow: 0 12px 30px rgba(2,12,43,0.22); }
+}
+
+.right h2 {
+  font-size: 30px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.right > p {
+  font-size: 15px;
+  margin-bottom: 20px;
+  color: #A9B7C9;
+}
+
+.tabs {
+  display: flex;
+  margin: 20px 0;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 12px 0;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tabs button:hover:not(.active) {
+    background: rgba(46, 107, 255, 0.1);
+    border: 2px solid rgba(46, 107, 255, 0.3);
+  }
+}
+
+.tabs button.active {
+  background: #2E6BFF;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 18px;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #2A4B7C;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 15px;
+  outline: none;
+  background: #162B45;
+  color: #DCE6F2;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+  color: #A9B7C9;
+}
+
+.main-btn {
+  width: 100%;
+  padding: 14px 28px;
+  background: #2E6BFF;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: Poppins, sans-serif;
+  box-shadow: 0 4px 12px rgba(46, 107, 255, 0.35);
+  white-space: nowrap;
+}
+
+.main-btn:hover {
+  background: #2558D8;
+  box-shadow: 0 6px 18px rgba(46, 107, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.main-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(46, 107, 255, 0.3);
+}
+
+.main-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.main-btn:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(46, 107, 255, 0.35);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.divider-text {
+  padding: 0 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 12px 14px;
+  background: white;
+  color: #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #f9fafb;
+}
+
+.google-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.google-icon {
+  flex-shrink: 0;
+}

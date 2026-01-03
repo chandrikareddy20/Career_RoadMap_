@@ -1,0 +1,158 @@
+<div class="project-details-page">
+  <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+
+  <div class="project-content" *ngIf="project">
+    <div class="project-header-section">
+      <div class="header-left">
+        <h1>{{ project.title }}</h1>
+        <p class="project-description">{{ project.description }}</p>
+      </div>
+      <div class="header-badges">
+        <span 
+          class="difficulty-badge" 
+          [style.background-color]="getDifficultyColor(project.difficulty)"
+        >
+          {{ project.difficulty }}
+        </span>
+        <span class="portfolio-badge" *ngIf="project.portfolioReady">⭐ Portfolio Ready</span>
+      </div>
+    </div>
+
+    <div class="project-info-grid">
+      <div class="info-card">
+        <span class="info-label">Estimated Time</span>
+        <span class="info-value">{{ project.estimatedTime }}</span>
+      </div>
+      <div class="info-card">
+        <span class="info-label">Category</span>
+        <span class="info-value">{{ project.category }}</span>
+      </div>
+      <div class="info-card">
+        <span class="info-label">Difficulty</span>
+        <span class="info-value">{{ project.difficulty }}</span>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs">
+        <button 
+          class="tab-btn" 
+          [class.active]="!showSteps && !showGitHubSetup"
+          (click)="showSteps = false; showGitHubSetup = false"
+        >
+          Overview
+        </button>
+        <button 
+          class="tab-btn" 
+          [class.active]="showSteps"
+          (click)="toggleSteps()"
+        >
+          Step-by-Step Guide
+        </button>
+        <button 
+          class="tab-btn" 
+          [class.active]="showGitHubSetup"
+          (click)="toggleGitHubSetup()"
+        >
+          GitHub Setup
+        </button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div class="tab-content" *ngIf="!showSteps && !showGitHubSetup">
+        <div class="content-section">
+          <h3>Required Skills</h3>
+          <div class="skills-list">
+            <span 
+              *ngFor="let skill of project.skills" 
+              class="skill-tag"
+            >
+              {{ skill }}
+            </span>
+          </div>
+        </div>
+
+        <div class="content-section" *ngIf="project.resources.length > 0">
+          <h3>Resources</h3>
+          <ul class="resources-list">
+            <li *ngFor="let resource of project.resources">
+              <a [href]="resource.url" target="_blank" rel="noopener noreferrer">
+                {{ resource.title }}
+                <span class="resource-type">{{ resource.type }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Guide Tab -->
+      <div class="tab-content" *ngIf="showSteps">
+        <div class="steps-container">
+          <div 
+            *ngFor="let step of project.steps" 
+            class="step-item"
+          >
+            <div class="step-number">{{ step.number }}</div>
+            <div class="step-content">
+              <h4>{{ step.title }}</h4>
+              <p>{{ step.description }}</p>
+              
+              <ul class="step-tips" *ngIf="step.tips && step.tips.length > 0">
+                <li *ngFor="let tip of step.tips">{{ tip }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub Setup Tab -->
+      <div class="tab-content" *ngIf="showGitHubSetup">
+        <div class="github-setup">
+          <div class="setup-section">
+            <h3>Repository Setup</h3>
+            <div class="setup-item">
+              <strong>Repository Name:</strong>
+              <code class="code-inline">{{ project.githubSetup.repositoryName }}</code>
+            </div>
+          </div>
+
+          <div class="setup-section">
+            <h3>Git Commands</h3>
+            <div class="commands-list">
+              <div 
+                *ngFor="let cmd of project.githubSetup.gitCommands" 
+                class="command-item"
+              >
+                <code class="command-code">{{ cmd }}</code>
+                <button class="copy-btn" (click)="copyToClipboard(cmd)">📋</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="setup-section">
+            <h3>README Template</h3>
+            <pre class="readme-template"><code>{{ project.githubSetup.readmeTemplate }}</code></pre>
+            <button class="copy-btn-large" (click)="copyToClipboard(project.githubSetup.readmeTemplate)">
+              📋 Copy README Template
+            </button>
+          </div>
+
+          <div class="setup-section">
+            <h3>Deployment Options</h3>
+            <ul class="deployment-list">
+              <li *ngFor="let option of project.githubSetup.deploymentOptions">
+                <span class="deployment-icon">🚀</span>
+                <span>{{ option }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-message" *ngIf="!project">
+    <p>Project not found. Redirecting to dashboard...</p>
+  </div>
+</div>
+

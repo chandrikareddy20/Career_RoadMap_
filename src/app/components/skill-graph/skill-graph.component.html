@@ -1,0 +1,114 @@
+<div class="skill-graph-container">
+  <div class="graph-header">
+    <h3>Skill Dependency Graph</h3>
+    <p class="subtitle">Explore how skills connect and build upon each other</p>
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-dot beginner"></span>
+        <span>Beginner</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot intermediate"></span>
+        <span>Intermediate</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot advanced"></span>
+        <span>Advanced</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-line prerequisite"></span>
+        <span>Prerequisite</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-line recommended"></span>
+        <span>Recommended</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="graph-wrapper" #graphContainer>
+    <svg [attr.width]="width" [attr.height]="height" class="skill-graph-svg">
+      <!-- Draw edges (connections) -->
+      <g class="edges">
+        <line
+          *ngFor="let edge of edges"
+          [attr.x1]="getNodeX(edge.from)"
+          [attr.y1]="getNodeY(edge.from)"
+          [attr.x2]="getNodeX(edge.to)"
+          [attr.y2]="getNodeY(edge.to)"
+          [class.edge-prerequisite]="edge.type === 'prerequisite'"
+          [class.edge-recommended]="edge.type === 'recommended'"
+          [class.edge-highlight]="selectedNode && (edge.from === selectedNode.id || edge.to === selectedNode.id)"
+        />
+      </g>
+
+      <!-- Draw nodes (skills) -->
+      <g class="nodes">
+        <g
+          *ngFor="let node of nodes"
+          [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
+          (click)="onNodeClick(node)"
+          (mouseenter)="onNodeHover(node)"
+          (mouseleave)="onNodeHover(null)"
+          [class]="getNodeClass(node)"
+          class="node-group"
+        >
+          <!-- Node circle -->
+          <circle
+            [attr.r]="node.completed ? 35 : 30"
+            class="node-circle"
+          />
+          <!-- Completion checkmark background circle -->
+          <circle
+            *ngIf="node.completed"
+            class="checkmark-bg"
+            [attr.r]="12"
+            cy="-20"
+          />
+          <!-- Node label -->
+          <text
+            class="node-label"
+            text-anchor="middle"
+            dy="5"
+          >
+            {{ node.label.length > 15 ? (node.label.substring(0, 15) + '...') : node.label }}
+          </text>
+          <!-- Completion checkmark -->
+          <text
+            *ngIf="node.completed"
+            class="node-checkmark"
+            text-anchor="middle"
+            dy="-20"
+          >✓</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Node details panel -->
+  <div class="node-details" *ngIf="selectedNode">
+    <div class="details-header">
+      <h4>{{ selectedNode.label }}</h4>
+      <button class="close-btn" (click)="selectedNode = null" aria-label="Close details">×</button>
+    </div>
+    <div class="details-content">
+      <div class="detail-item">
+        <strong>Level:</strong> 
+        <span class="level-badge" [class]="'badge-' + selectedNode.level">{{ selectedNode.level }}</span>
+      </div>
+      <div class="detail-item" *ngIf="selectedNode.completed">
+        <strong>Status:</strong> 
+        <span class="status-completed">✓ Completed</span>
+      </div>
+      <div class="detail-item" *ngIf="getConnectedNodes(selectedNode.id).length > 0">
+        <strong>Connected Skills:</strong>
+        <ul class="connected-skills">
+          <li *ngFor="let label of getConnectedNodeLabels(selectedNode.id)">
+            {{ label }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+

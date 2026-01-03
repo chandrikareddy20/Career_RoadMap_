@@ -1,0 +1,139 @@
+<div class="quiz-page">
+  <div class="header">
+    <button class="back-btn" (click)="back()">←</button>
+    <div class="header-content">
+      <h1>Quiz</h1>
+      <div class="subtitle">{{ quiz?.name || 'Quiz' }} — Roadmap: {{ roadmapId }}</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div *ngIf="quiz; else noQuiz">
+      <!-- Results screen -->
+      <div *ngIf="showResults" class="card quiz-card">
+        <!-- Detailed results -->
+        <div class="result-summary">
+          <div class="score-info">
+            <div>
+              <p class="subtitle">Your Score</p>
+              <div class="score-large">{{ score }}%</div>
+            </div>
+            <div class="time-info">
+              <p class="subtitle">Time Taken</p>
+              <div class="time-display">{{ formattedTime }}</div>
+            </div>
+          </div>
+
+          <div class="result-list" style="margin-top:16px">
+            <div class="result-item" *ngFor="let q of quiz.questions; let i = index" 
+                 [ngClass]="{'answer-correct': userAnswers[i] === q.correctIndex, 'answer-wrong': userAnswers[i] !== q.correctIndex && userAnswers[i] >= 0}">
+              <div class="q-title">{{ i + 1 }}. {{ q.question }}</div>
+              <div class="result-row">
+                <div class="user-answer" [ngClass]="{'correct-answer-bg': userAnswers[i] === q.correctIndex, 'wrong-answer-bg': userAnswers[i] !== q.correctIndex && userAnswers[i] >= 0}">
+                  <strong>Your answer:</strong>
+                  <span [innerText]="q.options[userAnswers[i]] || 'No answer'" 
+                        class="answer-text"
+                        [ngClass]="{'text-correct': userAnswers[i] === q.correctIndex, 'text-wrong': userAnswers[i] !== q.correctIndex && userAnswers[i] >= 0}"></span>
+                  <span class="result-icon" [ngClass]="{'correct': userAnswers[i] === q.correctIndex, 'wrong': userAnswers[i] !== q.correctIndex && userAnswers[i] >= 0}">
+                    {{ userAnswers[i] === q.correctIndex ? '✔️' : '✖️' }}
+                  </span>
+                </div>
+                <div *ngIf="userAnswers[i] !== q.correctIndex && userAnswers[i] >= 0" class="correct-answer-show">
+                  <strong>Correct answer:</strong> 
+                  <span class="correct-answer-text">{{ q.options[q.correctIndex] }}</span>
+                </div>
+              </div>
+              <div class="explain-text" *ngIf="q.explanation">{{ q.explanation }}</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+            <button class="btn primary" (click)="back()">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active question -->
+      <div *ngIf="!showResults" class="card quiz-card">
+        <div class="question-header">
+          <div class="q-meta">Question {{ currentIndex + 1 }} of {{ quiz.questions.length }}</div>
+          <div class="timer-container">
+            <div class="timer-display" [ngClass]="{'timer-warning': timeRemaining <= 10, 'timer-danger': timeRemaining <= 5}">
+              <span class="timer-icon">⏱️</span>
+              <span class="timer-text">{{ formattedCountdown }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-block" *ngIf="quiz.questions[currentIndex] as q">
+          <div class="q-title">{{ currentIndex + 1 }}. {{ q.question }}</div>
+
+          <div class="q-options">
+            <label *ngFor="let opt of q.options; let oi = index" class="option-label">
+              <input type="radio"
+                     name="q-{{ currentIndex }}"
+                     [value]="oi"
+                     [(ngModel)]="userAnswers[currentIndex]" />
+              <span class="opt-text">{{ opt }}</span>
+            </label>
+          </div>
+
+          <!-- Question Navigation -->
+          <div class="question-navigation">
+            <div class="nav-info">
+              <span class="nav-text">Navigate to:</span>
+            </div>
+            <div class="question-numbers">
+              <button
+                *ngFor="let question of quiz.questions; let i = index"
+                class="question-number-btn"
+                [class.active]="currentIndex === i"
+                [class.answered]="isQuestionAnswered(i)"
+                [class.unanswered]="!isQuestionAnswered(i)"
+                (click)="goToQuestion(i)"
+                [title]="'Question ' + (i + 1) + (isQuestionAnswered(i) ? ' (Answered)' : ' (Not answered)')"
+              >
+                {{ i + 1 }}
+              </button>
+            </div>
+          </div>
+
+          <div class="quiz-actions">
+            <button class="btn secondary"
+                    (click)="onPrevious()"
+                    [disabled]="currentIndex === 0"
+                    *ngIf="currentIndex > 0">
+              ← Previous
+            </button>
+
+            <div class="action-spacer"></div>
+
+            <button class="btn primary"
+                    (click)="onNext()"
+                    *ngIf="currentIndex < (quiz.questions.length - 1)">
+              Next Question →
+            </button>
+
+            <button class="btn primary"
+                    (click)="viewResults()"
+                    *ngIf="currentIndex === (quiz.questions.length - 1)">
+              View Results
+            </button>
+          </div>
+
+          <!-- Warning for unanswered questions -->
+          <div class="unanswered-warning" *ngIf="hasUnansweredQuestions() && currentIndex === (quiz.questions.length - 1)">
+            <span class="warning-icon">⚠️</span>
+            <span class="warning-text">You have unanswered questions. Use the question numbers above to review them before submitting.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noQuiz>
+      <div class="card">
+        <p>No quiz available for this roadmap.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

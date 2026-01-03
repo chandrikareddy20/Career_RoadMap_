@@ -1,0 +1,288 @@
+<div class="dashboard">
+  <!-- Header Section -->
+  <header class="header">
+    <div class="welcome-section">
+      <h1 *ngIf="welcomeMessage; else backTpl">{{ welcomeMessage }}</h1>
+      <ng-template #backTpl>
+        <h1>Welcome back, {{ userName }}!</h1>
+      </ng-template>
+      <p>Track your progress and continue your journey</p>
+    </div>
+    <button class="logout-btn" (click)="logout()">
+      <span>Logout</span>
+      <span class="arrow-icon">→</span>
+    </button>
+  </header>
+
+  <!-- Progress Cards Section -->
+  <section class="progress-cards">
+    <div class="card">
+      <h3>Overall Progress</h3>
+      <div class="value">{{ overallProgress }}%</div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="overallProgress"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Skills Completed</h3>
+      <div class="value">{{ skillsCompleted }}</div>
+      <div class="icon">🎓</div>
+    </div>
+
+    <div class="card">
+      <h3>Career Goal</h3>
+      <div class="value">{{ careerGoal }}</div>
+      <div class="icon">🎯</div>
+    </div>
+
+    <div class="card">
+      <h3>Estimated Time</h3>
+      <div class="value">{{ estimatedTime }}</div>
+      <div class="icon">📊</div>
+    </div>
+  </section>
+
+  <!-- Daily Goals Section -->
+  <section class="daily-goals-section">
+    <div class="card goals-card">
+      <div class="daily-goals-header">
+        <div class="header-left">
+          <h3>📅 Daily Goals</h3>
+          <p class="goals-subtitle">Set and track your daily learning objectives</p>
+        </div>
+        <button class="add-goal-btn" (click)="showAddGoal = !showAddGoal" *ngIf="!showAddGoal">
+          <span class="btn-icon">+</span>
+          <span>Add Goal</span>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="goals-progress-container" *ngIf="dailyGoals.length > 0">
+        <div class="progress-header">
+          <span class="progress-label">Today's Progress</span>
+          <span class="progress-percentage">{{ getProgressPercentage() }}%</span>
+        </div>
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width.%]="getProgressPercentage()">
+              <div class="progress-shine"></div>
+            </div>
+          </div>
+        </div>
+        <div class="progress-stats">
+          <span class="stat-item">
+            <span class="stat-value">{{ getCompletedGoalsCount() }}</span>
+            <span class="stat-label">Completed</span>
+          </span>
+          <span class="stat-divider">•</span>
+          <span class="stat-item">
+            <span class="stat-value">{{ getTotalGoalsCount() }}</span>
+            <span class="stat-label">Total</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- All Goals Completed Celebration -->
+      <div class="celebration-banner" *ngIf="getCompletedGoalsCount() === getTotalGoalsCount() && getTotalGoalsCount() > 0">
+        <div class="celebration-content">
+          <span class="celebration-icon">🎉</span>
+          <span class="celebration-text">All goals completed! Great job!</span>
+        </div>
+      </div>
+
+      <!-- Add Goal Form -->
+      <div class="add-goal-form" *ngIf="showAddGoal">
+        <div class="form-header">
+          <h4>Add New Goal</h4>
+        </div>
+        <input
+          type="text"
+          class="goal-input"
+          placeholder="e.g., Complete JavaScript Basics quiz"
+          [(ngModel)]="newGoalText"
+          (keyup.enter)="addDailyGoal()"
+          (keyup.escape)="showAddGoal = false; newGoalText = ''"
+          autofocus
+        />
+        <div class="goal-form-actions">
+          <button class="btn-primary-small" (click)="addDailyGoal()">
+            <span>✓ Add Goal</span>
+          </button>
+          <button class="btn-cancel-small" (click)="showAddGoal = false; newGoalText = ''">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Goals List -->
+      <div class="goals-list" *ngIf="dailyGoals.length > 0">
+        <div 
+          class="goal-item" 
+          *ngFor="let goal of dailyGoals" 
+          [class.completed]="goal.completed"
+        >
+          <div class="goal-checkbox-wrapper">
+            <label class="goal-checkbox">
+              <input
+                type="checkbox"
+                [checked]="goal.completed"
+                (change)="toggleGoalComplete(goal.id)"
+              />
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="goal-content">
+            <span class="goal-text" [class.strikethrough]="goal.completed">{{ goal.text }}</span>
+            <span class="goal-time" *ngIf="goal.completed">
+              ✓ Completed
+            </span>
+          </div>
+          <button class="delete-goal-btn" (click)="deleteGoal(goal.id)" title="Delete goal">
+            <span>🗑️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="goals-empty" *ngIf="dailyGoals.length === 0 && !showAddGoal">
+        <div class="empty-icon">🎯</div>
+        <p class="empty-title">No goals set for today</p>
+        <p class="empty-description">Add your first goal to start tracking your daily progress!</p>
+        <button class="add-goal-btn-small" (click)="showAddGoal = true">
+          <span class="btn-icon">+</span>
+          <span>Add Your First Goal</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Project Generator -->
+  <app-project-generator 
+    [userSkills]="currentUserSkills" 
+    [careerGoal]="careerGoal"
+  ></app-project-generator>
+
+  <!-- Achievement Gallery -->
+  <app-achievement-gallery [badges]="badges"></app-achievement-gallery>
+
+  <!-- Saved Roadmaps Panel (separate from roadmap card) -->
+  <section class="saved-panel" *ngIf="savedRoadmaps.length">
+    <div class="card">
+      <h3>Saved Roadmaps</h3>
+      <p class="subtitle">Your generated roadmaps — click to open</p>
+      <div class="saved-grid">
+        <div class="saved-card"
+             *ngFor="let r of savedRoadmaps"
+             [class.active-roadmap]="activeRoadmapId === r.id"
+             (click)="openSavedRoadmap(r.id)">
+          <div class="saved-card-top">
+            <strong class="saved-title">{{ r.name }}</strong>
+          </div>
+          <div class="saved-card-meta">{{ r.careerTitle }} • {{ r.estimatedTime }} • {{ r.progress }}%</div>
+          <div class="saved-card-actions">
+            <button class="link-btn" title="Quiz" (click)="openQuiz(r.id); $event.stopPropagation()">Quiz</button>
+            <button class="link-btn"
+                    [class.active-btn]="activeRoadmapId === r.id"
+                    title="Activate roadmap"
+                    (click)="activateRoadmap(r.id); $event.stopPropagation()">
+              {{ activeRoadmapId === r.id ? 'Active' : 'Activate' }}
+            </button>
+            <button class="link-btn delete-pill" title="Delete saved roadmap" aria-label="Delete saved roadmap {{ r.name }}" (click)="openDeleteModal(r.id); $event.stopPropagation()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Saved Roadmaps Panel moved below action cards -->
+
+  <!-- Saved Roadmaps Panel (moved below action cards) -->
+
+  <!-- Action / Roadmap Section: hide for new users until they create a roadmap -->
+  <section class="action-cards" *ngIf="!isFirstLogin || hasRoadmap">
+    <div class="card large-card">
+      <h3>📘 Your Roadmap</h3>
+      <p class="subtitle">Continue learning and track your progress</p>
+      <button class="primary-btn" (click)="goToRoadmap()">View Roadmap</button>
+      <button class="outline-btn" style="margin-top:8px;" (click)="openAllCourses()">All Courses</button>
+      <!-- Saved roadmaps panel moved below -->
+    </div>
+
+    <div class="card large-card">
+      <h3>🎯 Update Skills</h3>
+      <p class="subtitle">Modify your skills or generate a new roadmap</p>
+      <button class="outline-btn" (click)="markSeen(); goToSkills()">Update Skills & Continue</button>
+    </div>
+  </section>
+
+  <!-- Get Started Section (hidden when a roadmap exists) -->
+  <section class="get-started" *ngIf="!hasRoadmap && isFirstLogin">
+    <h2>Get Started with Your Career Journey</h2>
+    <p class="subtitle">Follow these steps to create your personalized roadmap</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Enter Your Skills</h3>
+          <p>Tell us about your current technical skills and interests</p>
+        </div>
+        <button class="step-btn" (click)="markSeen(); goToSkills()">Start →</button>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Choose Career Goal</h3>
+          <p>Select from various career paths in computer science</p>
+        </div>
+        <button class="step-btn" (click)="markSeen(); goToCareerGoal()">Choose →</button>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Get AI Roadmap</h3>
+          <p>Receive a personalized learning path with resources</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end get-started -->
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h4>Delete saved roadmap</h4>
+    <p>Are you sure you want to delete "{{ deleteTargetName }}"? This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn cancel" (click)="cancelDelete()">Cancel</button>
+      <button class="btn confirm" (click)="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- All Courses Modal -->
+<div class="modal-overlay" *ngIf="showCoursesModal" (click)="closeCoursesModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h4>All Courses & Resources</h4>
+    <p class="subtitle">Aggregated courses, certifications and project ideas from your roadmap</p>
+    <div class="course-list" style="margin-top:10px; max-height:420px; overflow:auto;">
+      <div *ngIf="!coursesList.length">No courses found for the selected roadmap.</div>
+      <ul *ngIf="coursesList.length">
+        <li *ngFor="let c of coursesList" class="course-row">
+          <div class="course-title">{{ c.title }}</div>
+          <div class="course-meta">{{ c.type }} <span *ngIf="c.source">• {{ c.source }}</span></div>
+          <div *ngIf="c.url"><a class="course-link" [href]="c.url" target="_blank" rel="noopener">Open</a></div>
+        </li>
+      </ul>
+    </div>
+    <div class="modal-actions" style="margin-top:12px;">
+      <button class="btn cancel" (click)="closeCoursesModal()">Close</button>
+    </div>
+  </div>
+</div>

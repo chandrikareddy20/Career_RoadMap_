@@ -1,0 +1,81 @@
+<div class="skills-page">
+  <button class="back-btn" (click)="goBack()">←</button>
+
+  <div class="content">
+    <h1>Your Skills & Interests</h1>
+    <p class="subtitle">Tell us about your current skills and areas of interest</p>
+
+    <!-- Technical Skills Section -->
+    <div class="card">
+      <h2>Technical Skills</h2>
+      <p class="instruction">Add your current technical skills and proficiency level</p>
+
+      <div class="input-group">
+        <label>Skill Name</label>
+        <input
+          type="text"
+          [(ngModel)]="skillName"
+          list="skillOptionsList"
+          placeholder="Start typing or choose from the list"
+          maxlength="100"
+          (keyup.enter)="addSkill()"
+        />
+        <datalist id="skillOptionsList">
+          <option *ngFor="let option of technicalSkillOptions" [value]="option"></option>
+        </datalist>
+        <div class="error" *ngIf="skillError"><small>{{ skillError }}</small></div>
+      </div>
+
+      <div class="input-group">
+        <label>Level</label>
+        <select [(ngModel)]="skillLevel">
+          <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
+        </select>
+      </div>
+
+      <button class="add-btn" (click)="addSkill()">+ Add Skill</button>
+
+      <!-- Display added skills -->
+      <div class="skills-list" *ngIf="skills.length > 0">
+        <div class="skill-item" *ngFor="let skill of skills; let i = index">
+          <span class="skill-name">{{ skill.name }}</span>
+          <span class="skill-level">{{ skill.level }}</span>
+          <button class="remove-btn" (click)="removeSkill(i)">×</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interests Section -->
+    <div class="card">
+      <h2>Interests</h2>
+      <p class="instruction">What areas of technology interest you?</p>
+
+      <div class="interest-input-group datalist-input">
+        <input
+          type="text"
+          [(ngModel)]="interest"
+          list="interestOptionsList"
+          placeholder="Start typing or choose from the list"
+          maxlength="100"
+          (keyup.enter)="addInterest()"
+        />
+        <datalist id="interestOptionsList">
+          <option *ngFor="let option of interestOptions" [value]="option"></option>
+        </datalist>
+        <button class="add-icon-btn" (click)="addInterest()">+</button>
+        <div class="error" *ngIf="interestError"><small>{{ interestError }}</small></div>
+      </div>
+
+      <!-- Display added interests -->
+      <div class="interests-list" *ngIf="interests.length > 0">
+        <div class="interest-item" *ngFor="let interest of interests; let i = index">
+          <span>{{ interest }}</span>
+          <button class="remove-btn" (click)="removeInterest(i)">×</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <button class="save-btn" (click)="saveAndContinue()">Save & Continue</button>
+  </div>
+</div>

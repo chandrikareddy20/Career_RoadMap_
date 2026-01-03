@@ -1,0 +1,27 @@
+<div class="quiz-page">
+  <header class="quiz-header">
+    <button class="back-btn" (click)="back()">← Back</button>
+    <h2>Quiz: {{ skillName }}</h2>
+  </header>
+
+  <div class="quiz-container" *ngIf="quiz">
+    <div class="quiz-question" *ngFor="let q of quiz.questions; let i = index">
+      <div class="q-text">{{ i + 1 }}. {{ q.question }}</div>
+      <div class="q-options">
+        <label *ngFor="let opt of q.options; let oi = index" class="option-label">
+          <input type="radio" [name]="'quiz-' + skillName + '-' + i" [value]="oi" [(ngModel)]="quiz.userAnswers[i]" />
+          <span class="opt">{{ opt }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="quiz-actions">
+      <button class="primary" (click)="submit()" [disabled]="!allAnswered()">Submit</button>
+      <div class="score" *ngIf="quiz.attempted">Score: {{ quiz.score }}%</div>
+    </div>
+  </div>
+
+  <div *ngIf="!quiz">
+    <p>No quiz available.</p>
+  </div>
+</div>

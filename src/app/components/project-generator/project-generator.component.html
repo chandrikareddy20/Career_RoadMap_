@@ -1,0 +1,72 @@
+<div class="project-generator">
+  <div class="generator-header">
+    <h2>💼 Portfolio Project Generator</h2>
+    <p class="subtitle">Generate portfolio-ready projects based on your skills</p>
+    <button class="toggle-projects-btn" (click)="toggleProjects()">
+      {{ showProjects ? '▼ Hide Projects' : '▶ Show Projects' }}
+    </button>
+  </div>
+
+  <!-- Difficulty Filter -->
+  <div class="difficulty-filters" *ngIf="showProjects">
+    <button
+      *ngFor="let diff of ['All', 'Beginner', 'Intermediate', 'Advanced']"
+      class="difficulty-btn"
+      [class.active]="selectedDifficulty === diff"
+      (click)="onDifficultyChange(diff)"
+    >
+      {{ diff }}
+    </button>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="projects-grid" *ngIf="showProjects">
+    <div
+      *ngFor="let project of filteredProjects"
+      class="project-card"
+      [class.portfolio-ready]="project.portfolioReady"
+      (click)="selectProject(project)"
+      style="cursor: pointer;"
+    >
+      <div class="project-header">
+        <div class="project-title-section">
+          <h3>{{ project.title }}</h3>
+          <span class="project-category">{{ project.category }}</span>
+        </div>
+        <div class="project-badges">
+          <span 
+            class="difficulty-badge" 
+            [style.background-color]="getDifficultyColor(project.difficulty)"
+          >
+            {{ project.difficulty }}
+          </span>
+          <span class="portfolio-badge" *ngIf="project.portfolioReady">⭐ Portfolio Ready</span>
+        </div>
+      </div>
+      
+      <p class="project-description">{{ project.description }}</p>
+      
+      <div class="project-meta">
+        <div class="meta-item">
+          <span class="meta-icon">⏱️</span>
+          <span>{{ project.estimatedTime }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🛠️</span>
+          <span>{{ project.skills.length }} skills</span>
+        </div>
+      </div>
+
+      <div class="project-skills">
+        <span 
+          *ngFor="let skill of project.skills" 
+          class="skill-tag"
+          [class.matching]="getMatchingSkills(project).includes(skill)"
+        >
+          {{ skill }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+

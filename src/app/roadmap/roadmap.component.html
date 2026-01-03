@@ -1,0 +1,216 @@
+<div class="roadmap-page">
+  <!-- Header -->
+  <header class="header">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <div class="header-content">
+      <h1>{{ careerTitle }}</h1>
+      <p class="career-description">{{ careerDescription }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="logout-btn" (click)="logout()">
+        <span>Logout</span>
+        <span class="arrow-icon">→</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Your Progress Card -->
+    <div class="card progress-card">
+      <h2>Your Progress</h2>
+      <div class="progress-info">
+        <div class="progress-bar-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progress"></div>
+          </div>
+        </div>
+        <div class="progress-percentage">{{ progress }}%</div>
+      </div>
+      <div class="progress-details">
+        <span>{{ skillsCompleted }} skills completed</span>
+        <span>Estimated: {{ estimatedTime }}</span>
+        <button class="outline-small" (click)="goToQuizRoadmap()">Take Quiz</button>
+      </div>
+    </div>
+
+    <!-- Your Current Skills Card -->
+    <div class="card skills-card">
+      <h2>
+        <span class="icon">👤</span>
+        Your Current Skills
+      </h2>
+      <div class="skills-tags" *ngIf="currentSkills.length > 0">
+        <span
+          class="skill-tag"
+          *ngFor="let skill of currentSkills"
+          [class.beginner]="skill.level === 'Beginner'"
+          [class.intermediate]="skill.level === 'Intermediate'"
+          [class.advanced]="skill.level === 'Advanced'"
+        >
+          {{ skill.name }} ({{ skill.level }})
+        </span>
+      </div>
+      <p *ngIf="currentSkills.length === 0" class="no-skills">No skills added yet</p>
+    </div>
+
+    <!-- Skills Roadmap Card -->
+    <div class="card roadmap-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <h2>
+            <span class="icon">🎯</span>
+            Skills Roadmap
+          </h2>
+          <p class="subtitle">Follow this path to achieve your career goal</p>
+        </div>
+        <button 
+          class="outline-small" 
+          (click)="toggleSkillGraph()"
+          [class.active]="showSkillGraph"
+          style="margin-left: auto;"
+        >
+          {{ showSkillGraph ? '📊 Hide Graph' : '📊 View Graph' }}
+        </button>
+      </div>
+
+      <!-- Skill Dependency Graph -->
+      <app-skill-graph 
+        *ngIf="showSkillGraph" 
+        [skills]="getAllSkillsForGraph()"
+      ></app-skill-graph>
+
+      <div class="roadmap-levels">
+        <div
+          class="roadmap-level"
+          *ngFor="let level of roadmapLevels"
+          [class.expanded]="level.expanded"
+        >
+          <div class="level-header" (click)="toggleLevel(level)">
+            <div class="level-header-left">
+              <span class="level-badge">{{ level.level }}</span>
+              <span class="skills-count">{{ getSkillsCount(level) }} Skills</span>
+            </div>
+            <span class="expand-icon">{{ level.expanded ? '▲' : '▼' }}</span>
+          </div>
+          <div class="level-skills" *ngIf="level.expanded">
+            <div class="level-body">
+              <div class="skill-card" *ngFor="let skill of level.skills">
+              <!-- If skill is a string, render simple item -->
+              <ng-container *ngIf="typeof skill === 'string'">
+                <div class="skill-item">{{ skill }}</div>
+              </ng-container>
+
+              <!-- If skill is an object, render detailed card -->
+              <ng-container *ngIf="typeof skill !== 'string'">
+                <div class="skill-detail" [class.completed]="skill['completed']">
+                  <div class="skill-top">
+                    <label class="skill-checkbox">
+                      <input 
+                        type="checkbox" 
+                        [checked]="skill['completed']" 
+                        [disabled]="true"
+                        readonly
+                        tabindex="-1"
+                      />
+                    </label>
+                    <div class="skill-title-block">
+                      <h3 class="skill-title">{{ skill['name'] }}</h3>
+                      <p class="skill-desc">{{ skill['description'] }}</p>
+                    </div>
+                    <div class="skill-duration">{{ skill['durationWeeks'] }} weeks</div>
+                  </div>
+
+                  <!-- Quiz trigger and panel -->
+                  <div class="skill-quiz-trigger">
+                    <button class="outline-small" (click)="goToQuiz(skill['name']); $event.stopPropagation()">Take Quiz</button>
+                  </div>
+
+                  <div *ngIf="skill.quiz as quiz">
+                    <div class="quiz-panel" *ngIf="quiz.show">
+                      <div class="quiz-question" *ngFor="let q of quiz.questions; let qi = index">
+                        <div class="q-text">{{ qi + 1 }}. {{ q.question }}</div>
+                        <div class="q-options">
+                          <label *ngFor="let opt of q.options; let oi = index" class="option-label">
+                            <input type="radio" name="quiz-{{ skill.name }}-{{ qi }}" [value]="oi" [(ngModel)]="quiz.userAnswers[qi]" />
+                            <span class="opt-text">{{ opt }}</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="quiz-actions">
+                        <button class="primary-small" (click)="submitQuiz(skill)">Submit Answers</button>
+                        <div class="quiz-result" *ngIf="quiz.attempted">Score: {{ quiz.score }}%</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="skill-resources" *ngIf="skill['resources']?.length">
+                    <div class="resources-label">Resources:</div>
+                    <ul>
+                      <li *ngFor="let res of skill['resources']">
+                        <span class="res-icon">↗</span>
+                        <a
+                          [href]="res.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          [class.disabled]="skill['completed']"
+                          [attr.aria-disabled]="skill['completed'] ? 'true' : null"
+                          >{{ res.title }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soft Skills & Professional Development -->
+    <div class="card soft-skills-card">
+      <h2>
+        <span class="icon">💡</span>
+        Soft Skills & Professional Development
+      </h2>
+      <p class="subtitle">Essential non-technical skills for career success</p>
+
+      <div class="soft-skills-list">
+        <div class="soft-skill-item" *ngFor="let skill of softSkills">
+          <h3>{{ skill.title }}</h3>
+          <p>{{ skill.description }}</p>
+          <div class="course-link">
+            <span class="link-icon">📄</span>
+            <a [href]="skill.courseUrl" target="_blank" rel="noopener noreferrer" class="course-link-text">
+              {{ skill.course }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certifications and Project Ideas -->
+    <div class="bottom-cards">
+      <div class="card certifications-card">
+        <h2>
+          <span class="icon">🎓</span>
+          Recommended Certifications
+        </h2>
+        <ul class="cert-list">
+          <li *ngFor="let cert of certifications">{{ cert }}</li>
+        </ul>
+      </div>
+
+      <div class="card projects-card">
+        <h2>
+          <span class="icon">📖</span>
+          Project Ideas
+        </h2>
+        <ul class="project-list">
+          <li *ngFor="let project of projectIdeas">{{ project }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

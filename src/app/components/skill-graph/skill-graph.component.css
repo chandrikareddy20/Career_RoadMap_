@@ -1,0 +1,349 @@
+.skill-graph-container {
+  background: #0F2138;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #162E4A;
+  margin-top: 20px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-graph-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(46, 107, 255, 0.25);
+    border: 3px solid rgba(46, 107, 255, 0.6);
+  }
+}
+
+.graph-header {
+  margin-bottom: 24px;
+}
+
+.graph-header h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #FFFFFF;
+}
+
+.graph-header .subtitle {
+  font-size: 14px;
+  color: #A9B7C9;
+  margin-bottom: 16px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #A9B7C9;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.beginner {
+  background: #2E6BFF;
+  box-shadow: 0 0 8px rgba(46, 107, 255, 0.5);
+}
+
+.legend-dot.intermediate {
+  background: #2558D8;
+  box-shadow: 0 0 8px rgba(37, 88, 216, 0.5);
+}
+
+.legend-dot.advanced {
+  background: #1a4ac0;
+  box-shadow: 0 0 8px rgba(26, 74, 192, 0.5);
+}
+
+.legend-line {
+  width: 24px;
+  height: 2px;
+  display: inline-block;
+}
+
+.legend-line.prerequisite {
+  background: #2E6BFF;
+}
+
+.legend-line.recommended {
+  background: rgba(46, 107, 255, 0.4);
+  border-style: dashed;
+}
+
+.graph-wrapper {
+  width: 100%;
+  overflow: auto;
+  background: rgba(7, 27, 46, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  min-height: 600px;
+}
+
+.skill-graph-svg {
+  width: 100%;
+  height: 100%;
+  min-width: 800px;
+  min-height: 600px;
+}
+
+/* Edges (connections) */
+.edges line {
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.edge-prerequisite {
+  stroke: #2E6BFF;
+  stroke-width: 2.5;
+  opacity: 0.6;
+}
+
+.edge-recommended {
+  stroke: rgba(46, 107, 255, 0.4);
+  stroke-width: 1.5;
+  stroke-dasharray: 5,5;
+  opacity: 0.4;
+}
+
+.edge-highlight {
+  stroke: #2E6BFF !important;
+  stroke-width: 4 !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 4px rgba(46, 107, 255, 0.8));
+}
+
+/* Nodes (skills) */
+.node-group {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.node-circle {
+  fill: #0F2138;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.node-beginner .node-circle {
+  stroke: #2E6BFF;
+  fill: rgba(46, 107, 255, 0.1);
+}
+
+.node-intermediate .node-circle {
+  stroke: #2558D8;
+  fill: rgba(37, 88, 216, 0.1);
+}
+
+.node-advanced .node-circle {
+  stroke: #1a4ac0;
+  fill: rgba(26, 74, 192, 0.1);
+}
+
+.node-completed .node-circle {
+  stroke: #2E6BFF;
+  fill: rgba(46, 107, 255, 0.2);
+  stroke-width: 3;
+}
+
+.node-selected .node-circle {
+  stroke: #2E6BFF !important;
+  stroke-width: 4 !important;
+  fill: rgba(46, 107, 255, 0.3) !important;
+  filter: drop-shadow(0 0 12px rgba(46, 107, 255, 0.8));
+  transform: scale(1.1);
+}
+
+.node-hovered .node-circle {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 8px rgba(46, 107, 255, 0.6));
+  transform: scale(1.05);
+}
+
+.node-label {
+  fill: #FFFFFF;
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+.checkmark-bg {
+  fill: #2E6BFF;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(46, 107, 255, 0.8));
+}
+
+.node-checkmark {
+  fill: #FFFFFF;
+  font-size: 18px;
+  font-weight: 900;
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Node details panel */
+.node-details {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #0F2138;
+  border: 2px solid #2E6BFF;
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 280px;
+  max-width: 350px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.details-header h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #A9B7C9;
+  font-size: 24px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-item {
+  font-size: 14px;
+  color: #DCE6F2;
+}
+
+.detail-item strong {
+  color: #FFFFFF;
+  margin-right: 8px;
+}
+
+.level-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-beginner {
+  background: rgba(46, 107, 255, 0.2);
+  color: #2E6BFF;
+}
+
+.badge-intermediate {
+  background: rgba(37, 88, 216, 0.2);
+  color: #2558D8;
+}
+
+.badge-advanced {
+  background: rgba(26, 74, 192, 0.2);
+  color: #1a4ac0;
+}
+
+.status-completed {
+  color: #2E6BFF;
+  font-weight: 600;
+}
+
+.connected-skills {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.connected-skills li {
+  padding: 6px 12px;
+  background: rgba(46, 107, 255, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid #2E6BFF;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .graph-wrapper {
+    min-height: 400px;
+  }
+  
+  .skill-graph-svg {
+    min-width: 600px;
+    min-height: 400px;
+  }
+  
+  .node-details {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-top: 20px;
+    width: 100%;
+  }
+}
+
